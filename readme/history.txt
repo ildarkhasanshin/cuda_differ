@@ -1,3 +1,6 @@
+2024.07.06
+- fix: if 1 of 2 files don't have 'diffs', we must set LastLineOnTop for it manually
+
 2023.10.02
 - fix: preserve lexers of 2 compared tabs (fix by @ThaiDat)
 

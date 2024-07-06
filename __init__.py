@@ -321,6 +321,10 @@ class Command:
         if lexers[1] is not None:
             b_ed.set_prop(ct.PROP_LEXER_FILE, lexers[1])
 
+        # app sets LastLineOnTop automatically on adding 'gaps', but if file don't have gaps, we must set it manually
+        a_ed.set_prop(ct.PROP_LAST_LINE_ON_TOP, True)
+        b_ed.set_prop(ct.PROP_LAST_LINE_ON_TOP, True)
+
         # if file was in group-2, and now group-2 is empty, set "one group" mode
         if ct.app_proc(ct.PROC_GET_GROUPING, '') in [ct.GROUPS_2VERT, ct.GROUPS_2HORZ]:
             e = ct.ed_group(1)  # Editor obj in group-2

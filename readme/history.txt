@@ -1,3 +1,6 @@
+2025.03.21
++ add: on app exiting, delete all files in the folder settings/differ_backup
+
 2024.07.06
 - fix: if 1 of 2 files don't have 'diffs', we must set LastLineOnTop for it manually
 

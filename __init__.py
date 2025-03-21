@@ -152,6 +152,23 @@ def prettify_pair_title(title):
     return SEP.join(names)
 
 
+
+def delete_all_files_in_folder(folder_path):
+    if not os.path.exists(folder_path):
+        # print(f"ERROR: Differ: Folder {folder_path} does not exist")
+        return
+
+    for filename in os.listdir(folder_path):
+        file_path = os.path.join(folder_path, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)  # Remove the file
+            # elif os.path.isdir(file_path):
+            #    shutil.rmtree(file_path)  # Remove the directory
+        except Exception as e:
+            print(f'ERROR: Differ failed to delete "{file_path}", reason: {e}')
+
+
 class Command:
     def __init__(self):
         self.scroll = ScrollSplittedTab(__name__)
@@ -907,3 +924,8 @@ class Command:
 
         e = ct.Editor(int(info))
         self.move_to_sep_tabs_ex(e)
+
+    def on_exit(self, ed_self):
+
+        if os.path.isdir(TEMP_DIR):
+            delete_all_files_in_folder(TEMP_DIR)

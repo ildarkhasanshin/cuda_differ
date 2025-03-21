@@ -927,5 +927,7 @@ class Command:
 
     def on_exit(self, ed_self):
 
-        if os.path.isdir(TEMP_DIR):
-            delete_all_files_in_folder(TEMP_DIR)
+        opt = ctx.get_opt('ui_one_instance', True)
+        if opt:
+            if os.path.isdir(TEMP_DIR):
+                delete_all_files_in_folder(TEMP_DIR)

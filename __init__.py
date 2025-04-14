@@ -100,6 +100,7 @@ DIFF_TAB_COUNT = 1
 TIMESTAMP_BEGIN = '_{'
 TIMESTAMP_END = '}.txt'
 
+untitled_opened = False
 
 def get_temp_name(e: ct.Editor):
     global TEMP_DIR
@@ -302,6 +303,13 @@ class Command:
                         with open(temp_fn, 'w', encoding='utf8') as f:
                             f.write(temp_text)
                         files[index] = temp_fn
+                        # close untitled-tab
+                        e.set_prop(ct.PROP_MODIFIED, False)
+                        e.focus()
+                        e.cmd(ct_cmd.cmd_FileClose)
+                        ct.app_idle(True)  # better close file
+                        sleep(0.3)
+                        ct.app_idle(True)  # better close file
                     else:
                         if e.get_prop(ct.PROP_MODIFIED):
                             text = _('First you must save file:\n{}').format(name)
@@ -919,8 +927,17 @@ class Command:
         e2 = ct.Editor(ed_self.get_prop(ct.PROP_HANDLE_SECONDARY))
         fn1 = e1.get_filename()
         fn2 = e2.get_filename()
-        ct.file_open(fn1)
-        ct.file_open(fn2)
+        global untitled_opened
+        if TEMP_DIR in fn1 and TEMP_DIR in fn2:
+            if not untitled_opened:
+                ct.file_open('')
+                ct.ed.set_text_all(e1.get_text_all())
+                ct.file_open('')
+                ct.ed.set_text_all(e2.get_text_all())
+                untitled_opened = True
+        else:
+            ct.file_open(fn1)
+            ct.file_open(fn2)
 
     def on_close_pre(self, ed_self: ct.Editor):
         title = ed_self.get_prop(ct.PROP_TAB_TITLE, '')

@@ -289,6 +289,8 @@ class Command:
         return False
 
     def set_files(self, file0, file1):
+        global untitled_opened
+        untitled_opened = False
         files = [file0, file1]
         lexers = [None, None]
         for (index, name) in enumerate(files):
@@ -930,10 +932,18 @@ class Command:
         global untitled_opened
         if TEMP_DIR in fn1 and TEMP_DIR in fn2:
             if not untitled_opened:
-                ct.file_open('')
-                ct.ed.set_text_all(e1.get_text_all())
-                ct.file_open('')
-                ct.ed.set_text_all(e2.get_text_all())
+                for h in ct.ed_handles():
+                    e = ct.Editor(h)
+                    if e.get_filename() == '' and e.get_text_all() == '':
+                        e.set_text_all(e1.get_text_all())
+                        ct.file_open('')
+                        ct.ed.set_text_all(e2.get_text_all())
+                    else:
+                        ct.file_open('')
+                        ct.ed.set_text_all(e1.get_text_all())
+                        ct.file_open('')
+                        ct.ed.set_text_all(e2.get_text_all())
+                    break
                 untitled_opened = True
         else:
             ct.file_open(fn1)
